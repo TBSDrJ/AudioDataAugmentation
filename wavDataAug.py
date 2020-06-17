@@ -97,10 +97,11 @@ intWav = wavToShort(wavBytes)
 if DEBUG:
     # Make sure integer list length matches .wav number of frames
     print("This should match nframes:", len(intWav))
-# Find maximum amplitude of wave
-maxAmp = max(abs(max(intWav)), abs(min(intWav)))
+# Find maximum amplitude of wave as a percentage of maximum.
+maxAmp = max(abs(max(intWav)), abs(min(intWav))) / MAX_SOUND
 if DEBUG:
-    print("Max amplitude:", maxAmp, "Proportion of MAX:", maxAmp/MAX_SOUND)
+    print("Max amplitude (as int):", max(abs(max(intWav)), abs(min(intWav))),
+        "Proportion of MAX:", maxAmp)
 
 outWavFile = wave.open('newCoke.wav', 'wb')
 # Use captured paramters for setting up output file.
