@@ -5,7 +5,7 @@ import wave
 from struct import pack, unpack
 
 """
-A .wav file (assuming mono not stereo sound) is set up as a sequence of
+Assumption: A .wav file (assuming mono not stereo sound) is set up as a sequence of
 16-bit/2-byte values, each of which represents the y-value of a sinusoidal
 function that represents the sound wave as a signed 16-bit integer (typically
 referred to as 'short'), where 0 = silence, and +/-2**15 is loudest.
@@ -20,7 +20,14 @@ def wavToShort(readBytes):
     Purpose: Convert .wav bytes to integers to make it easier to apply
         arithmetic operations to them.
     """
-    pass
+    intList = []
+    for i, b in enumerate(readBytes):
+        if i % 2 == 1:
+            # This will never get index out of range because of if statement
+            inBytes = readBytes[i-1:i+1]
+            inShort = unpack('h', inBytes)
+            intList.append(inShort)
+    return intList
 
 def shortToWav(intList):
     """
@@ -64,3 +71,19 @@ def wobbleAmplitude(intList, ampChanges):
         the sound wave.
     """
     pass
+
+wav = wave.open('coke.wav', 'rb')
+# Check input .wav file parameters.
+# Expecting:
+#   nchannels = 1
+#   sampwidth = 2
+#   framerate = 44100
+#   nframes = variable
+#   compType = 'NONE' or equivalent
+#   compname = 'NONE' or equivalent
+print(wav.getparams())
+# Read entire .wav file as bytes
+wavBytes = wav.readframes(wav.getnframes())
+intWav = wavToShort(wavBytes)
+# Make sure integer list length matches .wav number of frames
+print("This should match nframes:", len(intWav))
