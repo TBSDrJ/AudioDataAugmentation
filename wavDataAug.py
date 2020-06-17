@@ -38,7 +38,10 @@ def shortToWav(intList):
     Purpose: Convert list of integers (after it has been modified by an
         augmentation method) back to bytes so it can be written out to a .wav file.
     """
-    pass
+    bitStr = b''
+    for i in intList:
+        bitStr += pack('h', i)
+    return bitStr
 
 def changeAmplitude(intList, ampChange):
     """
