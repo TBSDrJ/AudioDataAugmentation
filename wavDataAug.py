@@ -124,6 +124,7 @@ if DEBUG:
     print("Uniform Amplitude Factors:", ampFactors)
 for factor in ampFactors:
     newIntWav = changeAmplitude(intWav, factor)
+    # Output to files.
 
 # Next, augment by speeding up/slowing down the original by a factor up to 0.20
 spFactors = []
@@ -136,7 +137,6 @@ if DEBUG:
 for factor in spFactors:
     outWavFile = wave.open('newCoke.wav', 'wb')
     # Use captured paramters for setting up output file.
-    # Notice number of frames is set to match length of new byte stream, in case
-    #    that has changed.
-    outWavFile.setparams((chn, swd, int(frt * factor), len(newIntWav), cmt, cmn))
+    # Notice that we carry out the speed change by changing sample rate.
+    outWavFile.setparams((chn, swd, int(frt * factor), nfr, cmt, cmn))
     outWavFile.writeframes(shortToWav(newIntWav))
