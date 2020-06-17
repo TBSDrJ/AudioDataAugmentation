@@ -11,6 +11,7 @@ function that represents the sound wave as a signed 16-bit integer (typically
 referred to as 'short'), where 0 = silence, and +/-2**15 is loudest.
 """
 
+DEBUG = True
 MAX_SOUND = 2**15
 
 def wavToShort(readBytes):
@@ -25,8 +26,9 @@ def wavToShort(readBytes):
         if i % 2 == 1:
             # This will never get index out of range because of if statement
             inBytes = readBytes[i-1:i+1]
+            # Outputs 1-tuple, so use [0] to get only integer
             inShort = unpack('h', inBytes)
-            intList.append(inShort)
+            intList.append(inShort[0])
     return intList
 
 def shortToWav(intList):
@@ -73,17 +75,19 @@ def wobbleAmplitude(intList, ampChanges):
     pass
 
 wav = wave.open('coke.wav', 'rb')
-# Check input .wav file parameters.
-# Expecting:
-#   nchannels = 1
-#   sampwidth = 2
-#   framerate = 44100
-#   nframes = variable
-#   compType = 'NONE' or equivalent
-#   compname = 'NONE' or equivalent
-print(wav.getparams())
+if DEBUG:
+    # Check input .wav file parameters.
+    # Expecting:
+    #   nchannels = 1
+    #   sampwidth = 2
+    #   framerate = 44100
+    #   nframes = variable
+    #   compType = 'NONE' or equivalent
+    #   compname = 'NONE' or equivalent
+    print(wav.getparams())
 # Read entire .wav file as bytes
 wavBytes = wav.readframes(wav.getnframes())
 intWav = wavToShort(wavBytes)
-# Make sure integer list length matches .wav number of frames
-print("This should match nframes:", len(intWav))
+if DEBUG:
+    # Make sure integer list length matches .wav number of frames
+    print("This should match nframes:", len(intWav))
