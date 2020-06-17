@@ -88,6 +88,8 @@ if DEBUG:
     #   compType = 'NONE' or equivalent
     #   compname = 'NONE' or equivalent
     print(inWavFile.getparams())
+# Capture parameters for setting up output file.
+chn, swd, frt, nfr, cmt, cmn = inWavFile.getparams()
 # Read entire .wav file as bytes
 wavBytes = inWavFile.readframes(inWavFile.getnframes())
 inWavFile.close()
@@ -99,3 +101,10 @@ if DEBUG:
 maxAmp = max(abs(max(intWav)), abs(min(intWav)))
 if DEBUG:
     print("Max amplitude:", maxAmp, "Proportion of MAX:", maxAmp/MAX_SOUND)
+
+outWavFile = wave.open('newCoke.wav', 'wb')
+# Use captured paramters for setting up output file.
+# Notice number of frames is set to match length of new byte stream, in case
+#    that has changed.
+outWavFile.setparams((chn, swd, frt, len(intWav), cmt, cmn))
+outWavFile.writeframes(shortToWav(intWav))
