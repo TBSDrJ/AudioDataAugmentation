@@ -91,3 +91,7 @@ intWav = wavToShort(wavBytes)
 if DEBUG:
     # Make sure integer list length matches .wav number of frames
     print("This should match nframes:", len(intWav))
+# Find maximum amplitude of wave
+maxAmp = max(abs(max(intWav)), abs(min(intWav)))
+if DEBUG:
+    print("Max amplitude:", maxAmp, "Proportion of MAX:", maxAmp/MAX_SOUND)
