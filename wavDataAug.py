@@ -135,9 +135,18 @@ if DEBUG:
 for factor in ampFactors:
     newIntWav = changeAmplitude(intWav, factor)
 
-outWavFile = wave.open('newCoke.wav', 'wb')
-# Use captured paramters for setting up output file.
-# Notice number of frames is set to match length of new byte stream, in case
-#    that has changed.
-outWavFile.setparams((chn, swd, frt, len(newIntWav), cmt, cmn))
-outWavFile.writeframes(shortToWav(newIntWav))
+# Next, augment by speeding up/slowing down the original by a factor up to 0.20
+spFactors = []
+while len(spFactors) < REPS:
+    factor = randrange(590, 615) / 512
+    if factor not in spFactors:
+        spFactors.append(factor)
+if DEBUG:
+    print("Speed Change Factors:", spFactors)
+for factor in spFactors:
+    outWavFile = wave.open('newCoke.wav', 'wb')
+    # Use captured paramters for setting up output file.
+    # Notice number of frames is set to match length of new byte stream, in case
+    #    that has changed.
+    outWavFile.setparams((chn, swd, int(frt * factor), len(newIntWav), cmt, cmn))
+    outWavFile.writeframes(shortToWav(newIntWav))
