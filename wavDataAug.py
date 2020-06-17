@@ -77,7 +77,7 @@ def wobbleAmplitude(intList, ampChanges):
     """
     pass
 
-wav = wave.open('coke.wav', 'rb')
+inWavFile = wave.open('coke.wav', 'rb')
 if DEBUG:
     # Check input .wav file parameters.
     # Expecting:
@@ -87,9 +87,10 @@ if DEBUG:
     #   nframes = variable
     #   compType = 'NONE' or equivalent
     #   compname = 'NONE' or equivalent
-    print(wav.getparams())
+    print(inWavFile.getparams())
 # Read entire .wav file as bytes
-wavBytes = wav.readframes(wav.getnframes())
+wavBytes = inWavFile.readframes(inWavFile.getnframes())
+inWavFile.close()
 intWav = wavToShort(wavBytes)
 if DEBUG:
     # Make sure integer list length matches .wav number of frames
