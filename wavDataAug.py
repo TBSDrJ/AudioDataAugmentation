@@ -63,16 +63,6 @@ def changeAmplitude(intList, ampChange):
         intList[index] = newValue
     return intList
 
-def changeSpeed(intList, spChange):
-    """
-    Inputs: intList = list of integers representing sound wave
-        spChange = factor by which speed should be changed
-    Returns: intList = list of integers, stretched to be longer/slower, or
-        compressed to be shorter/faster.
-    Purpose: Apply change in speed uniformly across the sound wave.
-    """
-    pass
-
 def wobbleAmplitude(intList, ampChanges):
     """
     Inputs: intList = list of integers representing sound wave
