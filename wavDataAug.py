@@ -3,6 +3,8 @@
 import wave
 # Module for converting bytes to other types and back; in Standard Library
 from struct import pack, unpack
+# Module to generate random values for data augmentation; in Standard Library
+from random import randrange
 
 """
 Assumption: A .wav file (assuming mono not stereo sound) is set up as a sequence of
@@ -13,6 +15,7 @@ referred to as 'short'), where 0 = silence, and +/-2**15 is loudest.
 
 DEBUG = True
 MAX_SOUND = 2**15
+REPS = 1 # Number of times each augmentation is run
 
 def wavToShort(readBytes):
     """
@@ -51,7 +54,14 @@ def changeAmplitude(intList, ampChange):
         clipped if beyond MAX_SOUND value.
     Purpose: Apply change in amplitude uniformly across the sound wave.
     """
-    pass
+    for index, value in enumerate(intList):
+        newValue =  int(value * ampChange)
+        if newValue > MAX_SOUND:
+            newValue = MAX_SOUND
+        if newValue < -MAX_SOUND:
+            newValue = -MAX_SOUND
+        intList[index] = newValue
+    return intList
 
 def changeSpeed(intList, spChange):
     """
@@ -103,9 +113,31 @@ if DEBUG:
     print("Max amplitude (as int):", max(abs(max(intWav)), abs(min(intWav))),
         "Proportion of MAX:", maxAmp)
 
+# Start data augmentation process with uniform amplitude change
+# Amount and direction of change depends on maxAmp.
+ampFactors = []
+while len(ampFactors) < REPS:
+    if maxAmp < 0.33:
+        # If maxAmp is less than 0.33, multiply by a factor between 1 and 3
+        # Using powers of 2 to ensure exact decimal matching
+        factor = randrange(257, 769) / 256
+    elif maxAmp < 0.66:
+        # If maxAmp is between 0.33 and 0.66, multiply by 0.5 to 1.5
+        factor =  randrange(256, 769) / 512
+    else:
+        # If maxAmp is bigger than 0.66, multiply by 0.33 and 1
+        factor = randrange(257, 768) / 768
+    # Don't use the same factor twice
+    if factor not in ampFactors:
+        ampFactors.append(factor)
+if DEBUG:
+    print("Uniform Amplitude Factors:", ampFactors)
+for factor in ampFactors:
+    newIntWav = changeAmplitude(intWav, factor)
+
 outWavFile = wave.open('newCoke.wav', 'wb')
 # Use captured paramters for setting up output file.
 # Notice number of frames is set to match length of new byte stream, in case
 #    that has changed.
-outWavFile.setparams((chn, swd, frt, len(intWav), cmt, cmn))
-outWavFile.writeframes(shortToWav(intWav))
+outWavFile.setparams((chn, swd, frt, len(newIntWav), cmt, cmn))
+outWavFile.writeframes(shortToWav(newIntWav))
